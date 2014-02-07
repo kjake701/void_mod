@@ -17,7 +17,7 @@ import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
 
-public class WorldProviderVoid extends WorldProviderSurface
+public class WorldProviderVoid extends WorldProvider
 {
 	private float[] colorsSunriseSunset = new float[4];
 	private static final String SR = "/rs:DarkDay.png";
@@ -29,13 +29,23 @@ public class WorldProviderVoid extends WorldProviderSurface
 	{
 		this.worldChunkMgr = new WorldChunkManagerHell(TheVoid.biomeGraveYard, this.dimensionId, this.dimensionId);
 		this.dimensionId = TheVoid.dimensionId;
-		this.hasNoSky = false;
+		this.hasNoSky = true;
 	}
 	
     @SideOnly(Side.CLIENT)
     public IRenderHandler getSkyRenderer()
     {
         return this.skyRendererVoid;
+    }
+    
+    @SideOnly(Side.CLIENT)
+
+    /**
+     * Returns true if the given X,Z coordinate should show environmental fog.
+     */
+    public boolean doesXZShowFog(int par1, int par2)
+    {
+        return true;
     }
 
     @SideOnly(Side.CLIENT)
@@ -52,12 +62,6 @@ public class WorldProviderVoid extends WorldProviderSurface
 	public int getAverageGroundLevel()
 	{
 		return 0;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public boolean doesXZShowFog(int par1, int par2)
-	{
-		return false;
 	}
 	
 	public String getDimensionName()
@@ -84,11 +88,32 @@ public class WorldProviderVoid extends WorldProviderSurface
 	{
 		return false;
 	}
+	
+    @SideOnly(Side.CLIENT)
+    public boolean isSkyColored()
+    {
+        return false;
+    }
 
 	public boolean canRespawnHere()
 	{
 		return false;
 	}
+	
+    public float calculateCelestialAngle(long par1, float par3)
+    {
+        return 0.0F;
+    }
+
+    @SideOnly(Side.CLIENT)
+
+    /**
+     * Returns array with sunrise/sunset colors
+     */
+    public float[] calcSunriseSunsetColors(float par1, float par2)
+    {
+        return null;
+    }
 	
 	@SideOnly(Side.CLIENT)
 	public float getCloudHeight()
@@ -119,7 +144,7 @@ public class WorldProviderVoid extends WorldProviderSurface
 	
 	public boolean isSurfaceWorld()
 	{
-		return true;
+		return false;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -127,32 +152,38 @@ public class WorldProviderVoid extends WorldProviderSurface
 	{
 		if ((this instanceof WorldProviderVoid))
 		{
-			return "Entering Tut Dimension";
+			return "Entering The Void";
 		}
 		return null;
 	}
 	
 
 	
-	@SideOnly(Side.CLIENT)
-	public Vec3 getFogColor(float par1, float par2)
-	{
-		int i = 10518688;
-		float f2 = MathHelper.cos(par1 * 3.141593F * 2.0F) * 2.0F + 0.5F;
-		if (f2 < 0.0F)
-		{
-			f2 = 0.0F;
-		}
-		if (f2 > 1.0F)
-		{
-			f2 = 1.0F;
-		}
-		float f3 = (i >> 16 & 0xFF) / 255.0F;
-		float f4 = (i >> 8 & 0xFF) / 255.0F;
-		float f5 = (i & 0xFF) / 255.0F;
-		f3 *= (f2 * 0.0F + 0.15F);
-		f4 *= (f2 * 0.0F + 0.15F);
-		f5 *= (f2 * 0.0F + 0.15F);
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(f3, f4, f5);
-	}
+    /**
+     * Return Vec3D with biome specific fog color
+     */
+    public Vec3 getFogColor(float par1, float par2)
+    {
+        int i = 10518688;
+        float f2 = MathHelper.cos(par1 * (float)Math.PI * 2.0F) * 2.0F + 0.5F;
+
+        if (f2 < 0.0F)
+        {
+            f2 = 0.0F;
+        }
+
+        if (f2 > 1.0F)
+        {
+            f2 = 1.0F;
+        }
+
+        float f3 = 0.7529412F;
+        float f4 = 0.84705883F;
+        float f5 = 0.1F;
+        f3 *= f2 * 0.0F + 0.15F;
+        f4 *= f2 * 0.0F + 0.15F;
+        f5 *= f2 * 0.0F + 0.15F;
+        return this.worldObj.getWorldVec3Pool().getVecFromPool((double)f3, (double)f4, (double)f5);
+    }
+
 }

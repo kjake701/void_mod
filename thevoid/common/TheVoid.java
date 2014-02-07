@@ -45,6 +45,11 @@ import java.util.Random;
 
 
 
+
+
+
+
+
 import thevoid.common.blocks.BlockBlackDiamondOre;
 import thevoid.common.blocks.BlockColorG;
 import thevoid.common.blocks.BlockDeadStone;
@@ -61,12 +66,15 @@ import thevoid.common.blocks.Blood;
 import thevoid.common.blocks.Blood_Flowing;
 import thevoid.common.blocks.RedWoodLeaves;
 import thevoid.common.blocks.RedWoodPlanks;
+import thevoid.common.blocks.VoidMineralBlock;
+import thevoid.common.blocks.VoidMineralGlowingBlock;
 import thevoid.common.blocks.blockVoidFire;
 import thevoid.common.dimension.WorldProviderVoid;
 import thevoid.common.dimension.biome.BiomeGraveyard;
 import thevoid.common.gen.BDWorldGen;
 import thevoid.common.gen.OreGeneration;
 import thevoid.common.gen.RedStoneCrystalGen;
+import thevoid.common.gen.VoidMineralGen;
 import thevoid.common.gen.WorldGenRedWood;
 import thevoid.common.items.ItemBlackDiamond;
 import thevoid.common.items.ItemRedStoneCrystal;
@@ -77,6 +85,8 @@ import thevoid.common.items.RedStonePickPart1;
 import thevoid.common.items.RedStonePickPart2;
 import thevoid.common.items.RedStonePickPart3;
 import thevoid.common.items.RedWoodBoneMeal;
+import thevoid.common.items.SuspiciousMinerals;
+import thevoid.common.items.VoidPortalStaff;
 import thevoid.common.mob.EntityKitty;
 import thevoid.common.util.BID;
 import thevoid.common.util.CommonProxyBlackDiamond;
@@ -143,10 +153,10 @@ public class TheVoid
 	
 	//More Blocks
 	
-	public static blockVoidFire voidFire = (blockVoidFire)new blockVoidFire(2008);
+	public static blockVoidFire voidFire = (blockVoidFire)new blockVoidFire(2008).setLightValue(0.8F);
+	
 	public static BlockVoidPortal voidPortal = (BlockVoidPortal)new BlockVoidPortal(2009);
 
-	
 	public static final Block blockDeadCobbleStone = (new Block(2055, Material.rock)).setHardness(2.0F).setResistance(10.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("Dead Stone Brick").setCreativeTab(CreativeTabs.tabBlock).setTextureName("rs:deadcobblestone2");
 	
 	public final static Block blood_Flowing = 
@@ -176,6 +186,11 @@ public class TheVoid
 	
 	public final static Block redWoodLeaves = new RedWoodLeaves(1000).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("RS:RedWood Leaves");
 	
+	public final static Block voidMineralBlock = 
+			new VoidMineralBlock(2081, 12, false).setHardness(1.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("Void Mineral Block");
+	
+	public final static Block voidMineralGlowingBlock = 
+			new VoidMineralGlowingBlock(2082, 12, true).setHardness(1.0F).setStepSound(Block.soundStoneFootstep).setLightValue(1.0F).setUnlocalizedName("Void Mineral Block Glowing");
 	//Other
 	static int startEntityId = 300;
 	
@@ -217,6 +232,10 @@ public class TheVoid
 	public static Item ItemRedStoneStick;
 	
 	public static Item ItemRedStonePick;
+	
+	public static Item SuspiciousMinerals;
+	
+	public static Item voidPortalStaff;
 	
 	//Blocks
 	
@@ -301,12 +320,15 @@ public class TheVoid
 		 ItemRedStoneSword = (new ItemRedStoneSword(543, 7, ToolMaterials.BlackDiamond)).setUnlocalizedName("RS:RedStoneSword");
 		 ItemBlackDiamond = (new ItemBlackDiamond(565, 8).setUnlocalizedName("RS:BlackDiamond"));
 		 ItemRedStoneCrystal = (new ItemRedStoneCrystal(568, 10).setUnlocalizedName("RS:RedStoneCrystal"));
+		 SuspiciousMinerals = (new SuspiciousMinerals(789));
+		 voidPortalStaff = (new VoidPortalStaff(780));
 		
 		MinecraftForge.EVENT_BUS.register(new RedWoodBoneMeal());
 		
 		
 		//ores gen
 		
+		GameRegistry.registerWorldGenerator(new VoidMineralGen());
 		GameRegistry.registerWorldGenerator(new BDWorldGen());
 		GameRegistry.registerWorldGenerator(new OreGeneration());
 		GameRegistry.registerWorldGenerator(new RedStoneCrystalGen());
@@ -324,6 +346,8 @@ public class TheVoid
 		GameRegistry.registerBlock(blood_Still, "Blood_Still");
 		GameRegistry.registerBlock(voidFire);
 		
+		GameRegistry.registerBlock(voidMineralBlock, "Void Mineral Block");
+		GameRegistry.registerBlock(voidMineralGlowingBlock, "Void Mineral Block Glowing");
 		GameRegistry.registerBlock(blockSpoooookyLantern);
 		GameRegistry.registerBlock(blockSpoooooky);
 		GameRegistry.registerBlock(blockDeadCobbleStone);
@@ -339,6 +363,8 @@ public class TheVoid
 		GameRegistry.registerBlock(RedWoodPlanks);
 		GameRegistry.registerBlock(BlockBlackDiamondOre);
 		
+		LanguageRegistry.addName(voidMineralGlowingBlock, "Suspicious Glowing Block");
+		LanguageRegistry.addName(voidMineralBlock, "Suspicious Block");
 		LanguageRegistry.addName(voidFire, "Block Void Fire");
 		LanguageRegistry.addName(blockSpoooookyLantern, "Spoooookier");
 		LanguageRegistry.addName(blockSpoooooky, "Spoooooky");
@@ -364,6 +390,8 @@ public class TheVoid
 		LanguageRegistry.addName(ItemRedStoneSword, "Red Stone Sword");
 		LanguageRegistry.addName(ItemBlackDiamond, "Black Diamond");
 		LanguageRegistry.addName(ItemRedStoneCrystal, "Red Stone Crystal");
+		LanguageRegistry.addName(SuspiciousMinerals, " Suspicious Minerals");
+		LanguageRegistry.addName(voidPortalStaff, "Void Portal Staff");
 		
 		//Recipes
 		
@@ -388,6 +416,13 @@ public class TheVoid
 			" D ",
             " D ",
             'A', TheVoid.RedStonePickPart1,  'B', TheVoid.RedStonePickPart2, 'C', TheVoid.RedStonePickPart3, 'D', TheVoid.ItemRedStoneStick
+     });
+		
+		GameRegistry.addRecipe(new ItemStack(TheVoid.voidPortalStaff, 1), new Object[]{
+            "ABA",
+			" D ",
+            " D ",
+            'A', TheVoid.ItemBlackDiamond,  'B', TheVoid.SuspiciousMinerals, 'D', TheVoid.ItemRedStoneStick
      });
 		
 		GameRegistry.addShapedRecipe(new ItemStack(TheVoid.RedStonePickPart3, 1), new Object[]{

@@ -8,7 +8,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
 
-public class RedStoneCrystalGen implements IWorldGenerator {
+public class VoidMineralGen implements IWorldGenerator {
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
         switch(world.provider.dimensionId){
@@ -25,14 +25,13 @@ public class RedStoneCrystalGen implements IWorldGenerator {
 	}
 
 	private void generateEnd(World world, Random rand, int chunkX, int chunkZ) {}
-
 	private void generateSurface(World world, Random rand, int chunkX, int chunkZ) {
         for(int k = 0; k < 3; k++){
         	int firstBlockXCoord = chunkX + rand.nextInt(16);
         	int firstBlockYCoord = rand.nextInt(20);
         	int firstBlockZCoord = chunkZ + rand.nextInt(16);
         	
-        	(new WorldGenMinable(TheVoid.BlockRedStoneCrystal.blockID, 4)).generate(world, rand, firstBlockXCoord, firstBlockYCoord, firstBlockZCoord);
+        	(new WorldGenMinable(TheVoid.voidMineralBlock.blockID, 9)).generate(world, rand, firstBlockXCoord, firstBlockYCoord, firstBlockZCoord);
         }
 	}
 

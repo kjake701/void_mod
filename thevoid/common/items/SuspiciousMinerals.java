@@ -7,14 +7,19 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class RedStonePickPart1 extends Item
+public class SuspiciousMinerals extends Item
 {
-	private static final String RSPP1 = "rs:RedStonePickPart1";
-	public static final String[][] field_82804_b = new String[][] {{"RedStonePickPart1"}};
-    public RedStonePickPart1(int par1)
+	private static final String RSST = "rs:SuspiciousMinerals";
+	public static final String[][] field_82804_b = new String[][] {{"RedStoneStick"}};
+    public SuspiciousMinerals(int par1)
     {
         super(par1);
         this.setCreativeTab(CreativeTabs.tabMaterials);
+    }
+    
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.itemIcon = par1IconRegister.registerIcon((this.RSST));
     }
 
     /**
@@ -25,9 +30,10 @@ public class RedStonePickPart1 extends Item
         return par1ItemStack.stackSize == 1;
     }
     
-    public void registerIcons(IconRegister par1IconRegister)
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack par1ItemStack)
     {
-        this.itemIcon = par1IconRegister.registerIcon((this.RSPP1));
+        return true;
     }
 
     /**
