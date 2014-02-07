@@ -25,9 +25,9 @@ public class BlockRLog extends BlockRotatedPillar
     @SideOnly(Side.CLIENT)
     private Icon[] RedLogTop;
     
-    private static final ResourceLocation RedLogSide3 = new ResourceLocation("rs:Blocks/RedLogSide.png");
-    private static final String RedLogSide4 = "rs:RedLogSide";
-    private static final String RedLogTop2 = "rs:RedLogTop";
+    private static final ResourceLocation RedLogSide3 = new ResourceLocation("rs:Blocks/DeadLog.png");
+    private static final String RedLogSide4 = "rs:DeadLog";
+    private static final String RedLogTop2 = "rs:DeadLogTop";
 
     public BlockRLog(int par1)
     {

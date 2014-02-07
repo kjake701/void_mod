@@ -50,6 +50,9 @@ import java.util.Random;
 
 
 
+
+
+
 import thevoid.common.blocks.BlockBlackDiamondOre;
 import thevoid.common.blocks.BlockColorG;
 import thevoid.common.blocks.BlockDeadStone;
@@ -72,6 +75,8 @@ import thevoid.common.blocks.blockVoidFire;
 import thevoid.common.dimension.WorldProviderVoid;
 import thevoid.common.dimension.biome.BiomeGraveyard;
 import thevoid.common.gen.BDWorldGen;
+import thevoid.common.gen.DeadBrickGraveGen;
+import thevoid.common.gen.DeadTreeGen;
 import thevoid.common.gen.OreGeneration;
 import thevoid.common.gen.RedStoneCrystalGen;
 import thevoid.common.gen.VoidMineralGen;
@@ -139,7 +144,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(modid = "kjake701_TheVoid", name = "The Void", version = "0.1")
+@Mod(modid = "kjake701_TheVoid", name = "The Void", version = "0.1.5")
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = true)
 
@@ -184,7 +189,7 @@ public class TheVoid
 	
 	public final static Block blockRLog = new BlockRLog(1001).setHardness(2.0F).setResistance(5.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("rs:RedLogSide");
 	
-	public final static Block redWoodLeaves = new RedWoodLeaves(1000).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("RS:RedWood Leaves");
+	public final static Block redWoodLeaves = new RedWoodLeaves(1000).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("RS:BoneLeaves");
 	
 	public final static Block voidMineralBlock = 
 			new VoidMineralBlock(2081, 12, false).setHardness(1.0F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("Void Mineral Block");
@@ -289,7 +294,7 @@ public class TheVoid
 	public void load(FMLInitializationEvent event)
 	{	
 		//Print
-		System.out.println("[The Void] Activating The Void Version 0.1");
+		System.out.println("[The Void] Activating The Void Version 0.1.5");
 		
 		//Blocks
 		
@@ -325,9 +330,9 @@ public class TheVoid
 		
 		MinecraftForge.EVENT_BUS.register(new RedWoodBoneMeal());
 		
-		
 		//ores gen
 		
+		GameRegistry.registerWorldGenerator(new DeadBrickGraveGen());
 		GameRegistry.registerWorldGenerator(new VoidMineralGen());
 		GameRegistry.registerWorldGenerator(new BDWorldGen());
 		GameRegistry.registerWorldGenerator(new OreGeneration());
@@ -504,27 +509,5 @@ public class TheVoid
     }
 
 
-
-	public void generateSurface(World world, Random rand, int baseX, int baseZ)
-	{		
-
-		  
-			BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(baseX, baseZ); 
-	       WorldGenRedWood tree = new WorldGenRedWood(true, 20, 40, 50, true); 
-			
-	        if((biome instanceof BiomeGenPlains) || (biome instanceof BiomeGenForest) || (biome instanceof BiomeGenHills) || 
-	        		(biome instanceof BiomeGenDesert) || (biome instanceof BiomeGenSwamp) || (biome instanceof BiomeGenTaiga) ||
-	        		(biome instanceof BiomeGraveyard));
-	        { 
-	        	for(int x = 0; x < 2; x++)
-	        	{
-	        		int Xcoord = baseX + rand.nextInt(16); 
-	        		int Zcoord = baseZ + rand.nextInt(16); 
-	        		int i = world.getHeightValue(Xcoord, Zcoord); 
-	        		tree.generate(world, rand, Xcoord, i, Zcoord); 
-	        	}
-	        	
-	        } 		
-	}
 	
 }

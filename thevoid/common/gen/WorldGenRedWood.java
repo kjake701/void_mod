@@ -43,7 +43,7 @@ public class WorldGenRedWood extends WorldGenerator
         int l = par2Random.nextInt(3) + this.minTreeHeight;
         boolean flag = true;
 
-        if (par4 >= 1 && par4 + l + 1 <= 256)
+        if (par4 >= 4 && par4 + l + 1 <= 256)
         {
             int i1;
             byte b0;
@@ -77,8 +77,8 @@ public class WorldGenRedWood extends WorldGenerator
 
                             if (!isAir &&
                                !block.isLeaves(par1World, l1, i1, j1) &&
-                                k1 != Block.grass.blockID &&
-                                k1 != Block.dirt.blockID &&
+                                k1 != TheVoid.blockGraveYardGrass.blockID &&
+                                k1 != TheVoid.blockGraveYardDirt.blockID &&
                                !block.isWood(par1World, l1, i1, j1))
                             {
                                 flag = false;
@@ -101,8 +101,9 @@ public class WorldGenRedWood extends WorldGenerator
                 i1 = par1World.getBlockId(par3, par4 - 1, par5);
                 Block soil = Block.blocksList[i1];
                 boolean isSoil = (soil != null && soil.canSustainPlant(par1World, par3, par4 - 1, par5, ForgeDirection.UP, (BlockSapling)Block.sapling));
-
-                if (isSoil && par4 < 256 - l - 1)
+                int isgraveyardgss = (TheVoid.blockGraveYardGrass.blockID);
+                
+                if (isgraveyardgss == TheVoid.blockGraveYardGrass.blockID && par4 < 256 - l - 1)
                 {
                     soil.onPlantGrow(par1World, par3, par4 - 1, par5, par3, par4, par5);
                     b0 = 3;
