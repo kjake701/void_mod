@@ -221,7 +221,7 @@ public class RedWoodLeaves extends BlockLeavesBase implements IShearable
      */
     public int idDropped(int par1, Random par2Random, int par3)
     {
-        return TheVoid.RedWoodSapling.blockID;
+        return TheVoid.BlockRedWoodSapling.blockID;
     }
 
     /**

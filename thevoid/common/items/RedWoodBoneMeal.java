@@ -14,9 +14,9 @@ public class RedWoodBoneMeal
     public void bonemealUsed(BonemealEvent event)
     {
         //this part here is what tells bonemeal to trigger the growing event
-if(event.world.getBlockId(event.X, event.Y, event.Z) == TheVoid.RedWoodSapling.blockID)
+if(event.world.getBlockId(event.X, event.Y, event.Z) == TheVoid.BlockRedWoodSapling.blockID)
 {
-((BlockRedWoodSapling)TheVoid.RedWoodSapling).growTree(event.world, event.X, event.Y, event.Z, new Random());
+((BlockRedWoodSapling)TheVoid.BlockRedWoodSapling).growTree(event.world, event.X, event.Y, event.Z, new Random());
 }
 /* this code here is an example of adding another event. you simply make more if statements
  

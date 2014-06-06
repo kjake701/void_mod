@@ -1,5 +1,7 @@
 package thevoid.common.mob;
 
+import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -17,6 +19,8 @@ import net.minecraft.entity.ai.EntityAITargetNonTamed;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityTameable;
@@ -28,7 +32,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityKitty extends EntityTameable
+public class EntityKitty extends EntityPigZombie
 {
     /**
      * The tempt AI task for this mob, used to prevent taming while it is fleeing.
@@ -41,16 +45,12 @@ public class EntityKitty extends EntityTameable
         this.setSize(0.6F, 0.8F);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(3, this.aiTempt = new EntityAITempt(this, 0.18F, Item.fishRaw.itemID, true));
         this.tasks.addTask(4, new EntityAIAvoidEntity(this, EntityPlayer.class, 16.0F, 0.23F, 0.4F));
-        this.tasks.addTask(5, new EntityAIFollowOwner(this, 0.3F, 10.0F, 5.0F));
         this.tasks.addTask(7, new EntityAILeapAtTarget(this, 0.3F));
         this.tasks.addTask(8, new EntityAIOcelotAttack(this));
-        this.tasks.addTask(9, new EntityAIMate(this, 0.23F));
         this.tasks.addTask(10, new EntityAIWander(this, 0.23F));
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
-        this.targetTasks.addTask(1, new EntityAITargetNonTamed(this, EntityChicken.class, 750, false));
     }
 
     protected void entityInit()
@@ -93,10 +93,11 @@ public class EntityKitty extends EntityTameable
 
     /**
      * Determines if an entity can be despawned, used on idle far away entities
+     * @return 
      */
     protected boolean canDespawn()
     {
-        return !this.isTamed();
+        return hasAttacked;
     }
 
     /**
@@ -137,7 +138,7 @@ public class EntityKitty extends EntityTameable
      */
     protected String getLivingSound()
     {
-        return this.isTamed() ? (this.isInLove() ? "mob.cat.purr" : (this.rand.nextInt(4) == 0 ? "mob.cat.purreow" : "mob.cat.meow")) : "";
+        return "mob.cat.purr";
     }
 
     /**
@@ -180,7 +181,7 @@ public class EntityKitty extends EntityTameable
     /**
      * Called when the entity is attacked.
      */
-    public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
+    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
     {
         if (this.isEntityInvulnerable())
         {
@@ -188,9 +189,37 @@ public class EntityKitty extends EntityTameable
         }
         else
         {
-            this.aiSit.setSitting(false);
+            Entity entity = par1DamageSource.getEntity();
+
+            if (entity instanceof EntityPlayer)
+            {
+                List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(32.0D, 32.0D, 32.0D));
+
+                for (int i = 0; i < list.size(); ++i)
+                {
+                    Entity entity1 = (Entity)list.get(i);
+
+                    if (entity1 instanceof EntityPigZombie)
+                    {
+                        EntityKitty entitypigzombie = (EntityKitty)entity1;
+                        entitypigzombie.becomeAngryAt(entity);
+                    }
+                }
+
+                this.becomeAngryAt(entity);
+            }
+
             return super.attackEntityFrom(par1DamageSource, par2);
         }
+    }
+    
+    private int randomSoundDelay;
+    private int angerLevel;
+    private void becomeAngryAt(Entity par1Entity)
+    {
+        this.entityToAttack = par1Entity;
+        this.angerLevel = 400 + this.rand.nextInt(400);
+        this.randomSoundDelay = this.rand.nextInt(40);
     }
 
     /**
@@ -199,72 +228,6 @@ public class EntityKitty extends EntityTameable
      */
     protected void dropFewItems(boolean par1, int par2) {}
 
-    /**
-     * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
-     */
-    public boolean interact(EntityPlayer par1EntityPlayer)
-    {
-        ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
-
-        if (this.isTamed())
-        {
-            if (par1EntityPlayer.username.equalsIgnoreCase(this.getOwnerName()) && !this.worldObj.isRemote && !this.isBreedingItem(itemstack))
-            {
-                this.aiSit.setSitting(!this.isSitting());
-            }
-        }
-        else if (this.aiTempt.isRunning() && itemstack != null && itemstack.itemID == Item.fishRaw.itemID && par1EntityPlayer.getDistanceSqToEntity(this) < 9.0D)
-        {
-            if (!par1EntityPlayer.capabilities.isCreativeMode)
-            {
-                --itemstack.stackSize;
-            }
-
-            if (itemstack.stackSize <= 0)
-            {
-                par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
-            }
-
-            if (!this.worldObj.isRemote)
-            {
-                if (this.rand.nextInt(3) == 0)
-                {
-                    this.setTamed(true);
-                    this.setTameSkin(1 + this.worldObj.rand.nextInt(3));
-                    this.setOwner(par1EntityPlayer.username);
-                    this.playTameEffect(true);
-                    this.aiSit.setSitting(true);
-                    this.worldObj.setEntityState(this, (byte)7);
-                }
-                else
-                {
-                    this.playTameEffect(false);
-                    this.worldObj.setEntityState(this, (byte)6);
-                }
-            }
-
-            return true;
-        }
-
-        return super.interact(par1EntityPlayer);
-    }
-
-    /**
-     * This function is used when two same-species animals in 'love mode' breed to generate the new baby animal.
-     */
-    public EntityKitty spawnBabyAnimal(EntityAgeable par1EntityAgeable)
-    {
-        EntityKitty entityocelot = new EntityKitty(this.worldObj);
-
-        if (this.isTamed())
-        {
-            entityocelot.setOwner(this.getOwnerName());
-            entityocelot.setTamed(true);
-            entityocelot.setTameSkin(this.getTameSkin());
-        }
-
-        return entityocelot;
-    }
 
     /**
      * Checks if the parameter is an item which this animal can be fed to breed it (wheat, carrots or seeds depending on
@@ -273,30 +236,6 @@ public class EntityKitty extends EntityTameable
     public boolean isBreedingItem(ItemStack par1ItemStack)
     {
         return par1ItemStack != null && par1ItemStack.itemID == Item.fishRaw.itemID;
-    }
-
-    /**
-     * Returns true if the mob is currently able to mate with the specified mob.
-     */
-    public boolean canMateWith(EntityAnimal par1EntityAnimal)
-    {
-        if (par1EntityAnimal == this)
-        {
-            return false;
-        }
-        else if (!this.isTamed())
-        {
-            return false;
-        }
-        else if (!(par1EntityAnimal instanceof EntityKitty))
-        {
-            return false;
-        }
-        else
-        {
-            EntityKitty entityocelot = (EntityKitty)par1EntityAnimal;
-            return !entityocelot.isTamed() ? false : this.isInLove() && entityocelot.isInLove();
-        }
     }
 
     public int getTameSkin()
@@ -344,13 +283,6 @@ public class EntityKitty extends EntityTameable
         }
     }
 
-    /**
-     * Gets the username of the entity.
-     */
-    public String getEntityName()
-    {
-        return this.hasCustomNameTag() ? this.getCustomNameTag() : (this.isTamed() ? "entity.Cat.name" : super.getEntityName());
-    }
 
     /**
      * Initialize this creature.
@@ -363,14 +295,9 @@ public class EntityKitty extends EntityTameable
             {
                 EntityKitty entityocelot = new EntityKitty(this.worldObj);
                 entityocelot.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                entityocelot.setGrowingAge(-24000);
                 this.worldObj.spawnEntityInWorld(entityocelot);
             }
         }
     }
 
-    public EntityAgeable createChild(EntityAgeable par1EntityAgeable)
-    {
-        return this.spawnBabyAnimal(par1EntityAgeable);
-    }
 }

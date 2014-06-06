@@ -6,7 +6,11 @@ import java.util.Random;
 
 
 
+
+
+
 import thevoid.common.TheVoid;
+import thevoid.common.dimension.biome.BiomeGraveyard;
 import thevoid.common.gen.WorldGenRedWood;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
@@ -16,6 +20,8 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.SpawnerAnimals;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.BiomeGenHills;
+import net.minecraft.world.biome.BiomeGenPlains;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -407,7 +413,6 @@ public class ChunkProviderVoid implements IChunkProvider
 			new WorldGenLakes(Block.waterStill.blockID).generate(this.worldObj, this.rand, var12, var13, var14);
 		}
 		
-		//BASIC TREES
         for (int c = 60; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -418,6 +423,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 6 + rand.nextInt(8), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+
         for (int c = 50; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -428,6 +434,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 4 + rand.nextInt(8), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+        
         for (int c = 50; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -438,6 +445,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 8 + rand.nextInt(8), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+
         for (int c = 50; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -448,6 +456,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 10 + rand.nextInt(8), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+		
         for (int c = 50; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -458,6 +467,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 15 + rand.nextInt(4), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+
         for (int c = 60; c > 0; c--)
         {
                 int j2 = var4 + rand.nextInt(16) + 8;
@@ -468,6 +478,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true, 6 + rand.nextInt(8), 0, 0, false).generate(worldObj, rand, j2, l3, j5);
                 }
         }
+        
         //Forest Trees
         for (int c = 60; c > 0; c--)
         {
@@ -479,19 +490,7 @@ public class ChunkProviderVoid implements IChunkProvider
                         new WorldGenRedWood(true).generate(worldObj, rand, j2, l3, j5);
                 }
         }
-        
-        //Hunge Trees
-        for (int c = 60; c > 0; c--)
-        {
-                int j2 = var4 + rand.nextInt(16) + 8;
-                int l3 = rand.nextInt(120);
-                int j5 = var5 + rand.nextInt(16) + 8;
-                if ((worldObj.getBlockId(j2, l3, j5) == 0) && (worldObj.getBlockId(j2, l3 - 1, j5) == TheVoid.blockGraveYardGrass.blockID))
-                {
-                        new WorldGenBigTree(true).generate(worldObj, rand, j2, l3, j5);
-                }
-        }
-        
+
 		var6.decorate(this.worldObj, this.rand, var4, var5);
 		SpawnerAnimals.performWorldGenSpawning(this.worldObj, var6, var4 + 8, var5 + 8, 16, 16, this.rand);
 		var4 += 8;
@@ -513,6 +512,7 @@ public class ChunkProviderVoid implements IChunkProvider
 		}
 		net.minecraft.block.BlockSand.fallInstantly = false;
 	}
+	
 	public boolean saveChunks(boolean par1, IProgressUpdate par2IProgressUpdate)
 	{
 		return true;

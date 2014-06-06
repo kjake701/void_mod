@@ -6,7 +6,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
 
+import thevoid.common.TheVoid;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -19,15 +21,15 @@ import net.minecraft.world.World;
 public class BlockRLog extends BlockRotatedPillar
 {
     /** The type of tree this log came from. */
-	public static final String[] woodType = new String[] {"RedWood"};
+	public static final String[] woodType = new String[] {"DeadWood"};
+	@SideOnly(Side.CLIENT)
+    private Icon[] DeadLog;
     @SideOnly(Side.CLIENT)
-    private Icon[] RedLogSide;
-    @SideOnly(Side.CLIENT)
-    private Icon[] RedLogTop;
+    private Icon[] DeadLogTop;
     
-    private static final ResourceLocation RedLogSide3 = new ResourceLocation("rs:Blocks/DeadLog.png");
-    private static final String RedLogSide4 = "rs:DeadLog";
-    private static final String RedLogTop2 = "rs:DeadLogTop";
+    private final ResourceLocation RedLogSide3 = new ResourceLocation("rs:Blocks/DeadLog.png");
+    private final String RedLogSide4 = "rs:DeadLog";
+    private final String RedLogTop2 = "rs:DeadLogTop";
 
     public BlockRLog(int par1)
     {
@@ -48,47 +50,17 @@ public class BlockRLog extends BlockRotatedPillar
      */
     public int idDropped(int par1, Random par2Random, int par3)
     {
-        return Block.wood.blockID;
+        return TheVoid.blockRLog.blockID;
     }
 
-    /**
-     * Called on server worlds only when the block has been replaced by a different block ID, or the same block with a
-     * different metadata value, but before the new metadata value is set. Args: World, x, y, z, old block ID, old
-     * metadata
-     */
-    public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
-    {
-        byte b0 = 4;
-        int j1 = b0 + 1;
-
-        if (par1World.checkChunksExist(par2 - j1, par3 - j1, par4 - j1, par2 + j1, par3 + j1, par4 + j1))
-        {
-            for (int k1 = -b0; k1 <= b0; ++k1)
-            {
-                for (int l1 = -b0; l1 <= b0; ++l1)
-                {
-                    for (int i2 = -b0; i2 <= b0; ++i2)
-                    {
-                        int j2 = par1World.getBlockId(par2 + k1, par3 + l1, par4 + i2);
-
-                        if (Block.blocksList[j2] != null)
-                        {
-                            Block.blocksList[j2].beginLeavesDecay(par1World, par2 + k1, par3 + l1, par4 + i2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
+    
     @SideOnly(Side.CLIENT)
-
     /**
      * The icon for the side of the block.
      */
     protected Icon getSideIcon(int par1)
     {
-        return this.RedLogSide[par1];
+        return this.DeadLog[par1];
     }
 
     @SideOnly(Side.CLIENT)
@@ -98,7 +70,7 @@ public class BlockRLog extends BlockRotatedPillar
      */
     protected Icon getEndIcon(int par1)
     {
-        return this.RedLogTop[par1];
+        return this.DeadLogTop[par1];
     }
 
     /**
@@ -118,6 +90,12 @@ public class BlockRLog extends BlockRotatedPillar
     {
         par3List.add(new ItemStack(par1, 1, 0));
     }
+
+    @Override
+    public boolean canSustainLeaves(World world, int x, int y, int z)
+    {
+        return true;
+    }
     
     @SideOnly(Side.CLIENT)
 
@@ -127,21 +105,14 @@ public class BlockRLog extends BlockRotatedPillar
      */
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.RedLogSide = new Icon[woodType.length];
-        this.RedLogTop = new Icon[woodType.length];
+        this.DeadLog = new Icon[woodType.length];
+        this.DeadLogTop = new Icon[woodType.length];
 
-        for (int i = 0; i < this.RedLogSide.length; ++i)
+        for (int i = 0; i < this.DeadLog.length; ++i)
         {
-            this.RedLogSide[i] = par1IconRegister.registerIcon(this.RedLogSide4);
-            this.RedLogTop[i] = par1IconRegister.registerIcon(this.RedLogTop2);
+            this.DeadLog[i] = par1IconRegister.registerIcon(this.getTextureName() + "_" + woodType[i]);
+            this.DeadLogTop[i] = par1IconRegister.registerIcon(this.getTextureName() + "_" + woodType[i] + "_top");
         }
-        
-    }
-
-    @Override
-    public boolean canSustainLeaves(World world, int x, int y, int z)
-    {
-        return true;
     }
 
     @Override

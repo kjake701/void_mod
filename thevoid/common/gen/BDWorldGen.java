@@ -2,6 +2,7 @@ package thevoid.common.gen;
 
 import java.util.Random;
 
+import thevoid.common.dimension.biome.BiomeGraveyard;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -23,34 +24,22 @@ public class BDWorldGen implements IWorldGenerator {
 
 		switch(world.provider.dimensionId){
 			
-		case 5:
-			generateSurface(world, random, chunkX * 16, chunkZ * 16);
+		case 5: generateVoid(world, random, chunkX * 16, chunkZ * 16);
 		}
 	}
-
-	private void generateSurface(World world, Random random, int BlockX, int BlockZ) 
-	                                                                //WAS Base
-	{                                                                      
-	BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(BlockX, BlockZ); 
-	if((biome instanceof BiomeGenPlains) || (biome instanceof BiomeGenForest) || (biome instanceof BiomeGenHills) || 
-    (biome instanceof BiomeGenDesert) || (biome instanceof BiomeGenSwamp) || (biome instanceof BiomeGenTaiga) || (biome instanceof BiomeGenSnow))
-	{
-// TODO Auto-generated method stub
-		for(int i = 0; i < 20; i++){
-			int Xcoord1 = BlockX + random.nextInt(16);
-			int Ycoord1 = random.nextInt(90);
-			int Zcoord1 = BlockZ + random.nextInt(16);
-			(new WorldGenRedWood(false, 6, 0, 0, false)).generate(world, random, Xcoord1, Ycoord1, Zcoord1);
-		}
-	}
-}
-
-		
 	
-
-	private void generateNether(World world, Random random, int i, int j) {
-		// TODO Auto-generated method stub
-		
+	private void generateVoid(World world, Random random, int BlockX, int BlockZ) {
+		BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(BlockX, BlockZ); 
+		if((biome instanceof BiomeGenPlains))
+		{
+	// TODO Auto-generated method stub
+			for(int i = 0; i < 20; i++){
+				int Xcoord1 = BlockX + random.nextInt(16);
+				int Ycoord1 = random.nextInt(90);
+				int Zcoord1 = BlockZ + random.nextInt(16);
+				(new WorldGenRedWood(false, 6, 0, 0, false)).generate(world, random, Xcoord1, Ycoord1, Zcoord1);
+			}
+		}
 	}
 
 }
